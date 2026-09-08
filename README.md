@@ -1,59 +1,230 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# StayFlow
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+StayFlow est une application web open source de gestion et de réservation de propriétés. Elle permet de consulter les logements disponibles, de voir les propriétés déjà réservées et d'enregistrer une réservation avec ses dates, les informations du client et le prix total.
 
-## About Laravel
+Le projet est développé avec Laravel et utilise Blade pour les vues HTML.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Fonctionnalités
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Affichage des propriétés actives disponibles.
+- Affichage des propriétés ayant déjà au moins une réservation.
+- Affichage des informations principales d'une propriété :
+  - titre ;
+  - adresse ;
+  - ville ;
+  - prix par nuit ;
+  - capacité ;
+  - description.
+- Formulaire de réservation d'une propriété.
+- Validation des informations du client et des dates.
+- Vérification des chevauchements de réservations.
+- Application d'un délai de nettoyage d'un jour entre deux réservations.
+- Calcul automatique du prix total selon le nombre de nuits.
+- Affichage du récapitulatif d'une réservation.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Technologies utilisées
 
-## Learning Laravel
+- PHP 8.3 ou une version supérieure compatible.
+- Laravel 13.
+- SQLite par défaut, avec possibilité d'utiliser une autre base de données supportée par Laravel.
+- Blade.
+- Tailwind CSS 4.
+- Vite.
+- PHPUnit.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Prérequis
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Avant d'installer StayFlow, vérifiez que les outils suivants sont disponibles :
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+- PHP 8.3 ou supérieur ;
+- Composer ;
+- Node.js et npm ;
+- une base de données SQLite ou une autre base de données compatible avec Laravel.
 
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Vérification des versions :
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+php -v
+composer -V
+node -v
+npm -v
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## Installation
 
-## Contributing
+Clonez le dépôt puis entrez dans son répertoire :
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+git clone https://github.com/<votre-utilisateur>/stayflow.git
+cd stayflow
+```
 
-## Code of Conduct
+Installez les dépendances PHP et JavaScript :
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+composer install
+npm install
+```
 
-## Security Vulnerabilities
+Créez le fichier d'environnement :
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-## License
+Pour utiliser SQLite, créez le fichier de base de données :
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-# stayflow
+```bash
+touch database/database.sqlite
+```
+
+Vérifiez ensuite les variables `DB_*` dans `.env`. Pour SQLite, la configuration peut utiliser :
+
+```dotenv
+DB_CONNECTION=sqlite
+DB_DATABASE=/chemin/absolu/vers/stayflow/database/database.sqlite
+```
+
+Lancez les migrations :
+
+```bash
+php artisan migrate
+```
+
+## Lancement en développement
+
+Dans un premier terminal, lancez le serveur Laravel :
+
+```bash
+php artisan serve
+```
+
+Dans un second terminal, lancez Vite pour compiler les ressources front-end :
+
+```bash
+npm run dev
+```
+
+L'application est ensuite accessible à l'adresse suivante :
+
+```text
+http://127.0.0.1:8000
+```
+
+Une commande de développement Laravel est également disponible :
+
+```bash
+composer run dev
+```
+
+## Routes principales
+
+| Méthode | URL | Nom | Description |
+| --- | --- | --- | --- |
+| `GET` | `/` | — | Page d'accueil |
+| `GET` | `/properties` | `properties.index` | Liste des propriétés disponibles et réservées |
+| `GET` | `/properties/{property}/book` | `bookings.create` | Formulaire de réservation |
+| `POST` | `/bookings` | `bookings.store` | Création d'une réservation |
+| `GET` | `/bookings/{booking}` | `bookings.show` | Affichage du détail d'une réservation |
+
+La page principale du catalogue est disponible ici :
+
+```text
+http://127.0.0.1:8000/properties
+```
+
+## Structure du projet
+
+```text
+app/
+├── Http/
+│   ├── Controllers/
+│   │   ├── BookingController.php
+│   │   └── PropertyController.php
+│   └── Requests/
+│       └── StoreBookingRequest.php
+├── Models/
+│   ├── Booking.php
+│   └── Property.php
+└── Services/
+    └── BookingService.php
+
+resources/views/
+├── bookings/
+│   ├── create.blade.php
+│   └── show.blade.php
+└── properties/
+    └── index.blade.php
+
+routes/
+└── web.php
+
+tests/Feature/
+├── BookingStoreTest.php
+└── PropertyIndexTest.php
+```
+
+## Tests
+
+Lancez toute la suite de tests avec :
+
+```bash
+php artisan test
+```
+
+Les tests couvrent notamment :
+
+- la création d'une réservation valide ;
+- le refus d'une réservation dont les dates se chevauchent ;
+- la séparation des propriétés disponibles et réservées dans le catalogue.
+
+Avant de proposer une contribution, vérifiez également le formatage PHP :
+
+```bash
+./vendor/bin/pint --test
+```
+
+## Contribution
+
+Les contributions sont les bienvenues.
+
+1. Forkez le dépôt.
+2. Créez une branche dédiée :
+
+   ```bash
+   git checkout -b feature/ma-fonctionnalite
+   ```
+
+3. Implémentez votre modification.
+4. Ajoutez ou mettez à jour les tests concernés.
+5. Vérifiez les tests et le formatage.
+6. Créez un commit clair.
+7. Ouvrez une pull request en décrivant :
+   - le problème résolu ;
+   - la solution proposée ;
+   - les tests effectués ;
+   - les éventuelles limites connues.
+
+Merci de garder les pull requests ciblées et de ne pas inclure de secrets, de fichiers `.env` ou de modifications sans rapport avec le sujet.
+
+## Signaler un problème
+
+Pour signaler un bug ou proposer une amélioration, ouvrez une issue en fournissant :
+
+- une description précise du problème ;
+- les étapes pour le reproduire ;
+- le comportement attendu ;
+- le comportement observé ;
+- la version de PHP et de Node.js utilisées ;
+- les messages d'erreur pertinents.
+
+## Sécurité
+
+Ne publiez jamais de clés API, mots de passe ou autres informations sensibles dans une issue, une pull request ou le dépôt.
+
+Pour signaler une vulnérabilité de manière responsable, utilisez le mécanisme de signalement privé disponible sur la plateforme d'hébergement du dépôt. Si aucun mécanisme privé n'est configuré, contactez directement les mainteneurs avant toute publication publique.
+
+## Licence
+
+StayFlow est un logiciel open source distribué sous licence MIT. Consultez le fichier `LICENSE` du dépôt pour connaître les conditions complètes d'utilisation, de modification et de redistribution.
